@@ -91,8 +91,7 @@ The application follows a complete development and deployment workflow:
 ## How to Run Locally
 
 ```bash
-pip install -r requirements.txt
-streamlit run app.py
+python -m streamlit run app.py
 ```
 
 ---
