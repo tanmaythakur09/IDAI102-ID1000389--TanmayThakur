@@ -2,7 +2,6 @@ import streamlit as st
 import datetime
 import random
 import pandas as pd
-import turtle
 import os
 
 # -------------------- PAGE CONFIG --------------------
@@ -99,23 +98,14 @@ if st.session_state.purchases:
 else:
     st.info("No purchases logged yet.")
 
-# -------------------- TURTLE GRAPHICS --------------------
-st.subheader("🐢 Eco Badge Drawing")
 
-def draw_leaf():
-    screen = turtle.Screen()
-    screen.bgcolor("white")
-    t = turtle.Turtle()
-    t.color("green")
-    t.speed(3)
 
-    t.begin_fill()
-    t.circle(50, 180)
-    t.circle(100, 180)
-    t.end_fill()
 
-    t.hideturtle()
-    screen.exitonclick()
+
+
+
+
 
 if st.button("Draw Eco Leaf"):
     draw_leaf()
+
