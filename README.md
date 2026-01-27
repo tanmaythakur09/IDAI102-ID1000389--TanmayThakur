@@ -119,11 +119,11 @@ streamlit run app.py
 
 ## Student Details
 
-* **Student Name:** *(Your full name)*
-* **Candidate Registration Number:** *(Your CRN)*
+* **Student Name:** *(Tanmay Thakur)*
+* **Candidate Registration Number:** *(1000389)*
 * **CRS Name:** Artificial Intelligence
 * **Course Name:** Python Programming
-* **School Name:** *(Your school name)*
+* **School Name:** *(Viraj International School)*
 
 ---
 
