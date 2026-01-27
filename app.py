@@ -98,14 +98,7 @@ if st.session_state.purchases:
 else:
     st.info("No purchases logged yet.")
 
-
-
-
-
-
-
-
-
 if st.button("Draw Eco Leaf"):
     draw_leaf()
+
 
