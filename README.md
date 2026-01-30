@@ -128,7 +128,17 @@ python -m streamlit run app.py
 
 ## Screenshots
 
-*(Add screenshots of the dashboard, purchase logging, and impact charts here)*
+*(<img width="1893" height="730" alt="image" src="https://github.com/user-attachments/assets/b28d416f-af3d-4f1c-8df3-d61c7702cd19" />
+)*
+
+(<img width="1884" height="991" alt="image" src="https://github.com/user-attachments/assets/327c2a1b-eb69-4073-a72b-2f89a57bd0e4" />) 
+
+(<img width="1893" height="582" alt="image" src="https://github.com/user-attachments/assets/3ca2079d-c556-478d-9846-fc38dcb2a803" />)
+
+(<img width="1875" height="407" alt="image" src="https://github.com/user-attachments/assets/19e037c0-ee9f-453b-ab07-54041b585ff0" />)
+
+
+
 
 ---
 
