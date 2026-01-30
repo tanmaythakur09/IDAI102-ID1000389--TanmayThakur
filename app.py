@@ -1,104 +1,198 @@
 import streamlit as st
-import datetime
-import random
 import pandas as pd
-import os
+from datetime import datetime
+import random
 
-# -------------------- PAGE CONFIG --------------------
+# ================= PAGE CONFIG =================
 st.set_page_config(
-    page_title="ShopImpact 🌱",
+    page_title="ShopImpact – Conscious Shopping",
+    page_icon="🌱",
     layout="wide"
 )
 
-st.title("🌍 ShopImpact – Conscious Shopping Dashboard")
-st.write("Track your purchases, understand their environmental impact, and make greener choices.")
+# ================= STYLING =================
+st.markdown("""
+<style>
+.main { background-color: #f4faf6; }
 
-# -------------------- DATA STRUCTURES --------------------
-if "purchases" not in st.session_state:
-    st.session_state.purchases = []
-
-impact_multipliers = {
-    "Clothing": 1.5,
-    "Electronics": 2.5,
-    "Groceries": 0.8,
-    "Footwear": 1.8,
-    "Second-hand Items": 0.3
+section[data-testid="stSidebar"] {
+    background-color: #e8f5e9;
 }
 
-green_alternatives = {
-    "Clothing": ["Organic Cotton Brands", "Thrift Stores"],
-    "Electronics": ["Refurbished Devices", "Energy Star Products"],
-    "Groceries": ["Local Produce", "Organic Markets"],
-    "Footwear": ["Vegan Shoes", "Recycled Material Brands"],
-    "Second-hand Items": ["Reuse & Resale Platforms"]
+.stButton > button {
+    background-color: #2e7d32;
+    color: white;
+    border-radius: 10px;
+    padding: 0.5em 1.2em;
+    font-weight: bold;
 }
 
-eco_tips = [
-    "Buying second-hand can reduce carbon footprint significantly 🌱",
-    "Local products usually travel less and pollute less 🚲",
-    "Quality over quantity helps the planet 💚",
-    "Refurbished electronics save resources ⚡"
-]
+.stButton > button:hover {
+    background-color: #1b5e20;
+}
 
-# -------------------- INPUT SECTION --------------------
-st.subheader("🛒 Log a Purchase")
+div[data-testid="metric-container"] {
+    background-color: white;
+    border-radius: 14px;
+    padding: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+}
+</style>
+""", unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns(3)
+# ================= SESSION STATE =================
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+if "user" not in st.session_state:
+    st.session_state.user = ""
+if "data" not in st.session_state:
+    st.session_state.data = {}
 
-with col1:
-    product_type = st.selectbox("Product Type", list(impact_multipliers.keys()))
+# ================= USERS =================
+USERS = {
+    "tanmay": "1234",
+    "student": "password"
+}
 
-with col2:
-    brand = st.text_input("Brand Name")
+# ================= LOGIN PAGE =================
+def login_page():
+    st.markdown("<h1 style='text-align:center;'>🌍 ShopImpact</h1>", unsafe_allow_html=True)
+    st.markdown("<h4 style='text-align:center;color:gray;'>Conscious Shopping Dashboard</h4>", unsafe_allow_html=True)
+    st.write("")
 
-with col3:
-    price = st.number_input("Price (₹)", min_value=0.0, step=1.0)
+    col1, col2, col3 = st.columns([1,2,1])
+    with col2:
+        username = st.text_input("👤 Username")
+        password = st.text_input("🔑 Password", type="password")
 
-if st.button("Add Purchase"):
-    impact = price * impact_multipliers[product_type]
-    purchase = {
-        "Date": datetime.date.today(),
-        "Product": product_type,
-        "Brand": brand,
-        "Price": price,
-        "CO2 Impact": impact
+        if st.button("🌱 Login"):
+            if username in USERS and USERS[username] == password:
+                st.session_state.logged_in = True
+                st.session_state.user = username
+                st.session_state.data.setdefault(username, [])
+                st.success("Login successful!")
+                st.rerun()
+            else:
+                st.error("Invalid credentials")
+
+# ================= MAIN APP =================
+def main_app():
+    user = st.session_state.user
+    purchases = st.session_state.data[user]
+
+    # ---------- SIDEBAR ----------
+    st.sidebar.markdown("## 🌱 ShopImpact")
+    st.sidebar.markdown(f"👤 **User:** {user}")
+
+    page = st.sidebar.radio(
+        "📍 Navigation",
+        ["📊 Dashboard", "🛒 Log Purchase", "♻️ Greener Tips"]
+    )
+
+    if st.sidebar.button("🚪 Logout"):
+        st.session_state.logged_in = False
+        st.session_state.user = ""
+        st.rerun()
+
+    impact_factor = {
+        "Clothing": 3.0,
+        "Electronics": 4.5,
+        "Groceries": 1.5,
+        "Footwear": 2.5,
+        "Second-hand": 0.8
     }
-    st.session_state.purchases.append(purchase)
-    st.success("Purchase added successfully!")
-    st.info(random.choice(eco_tips))
 
-# -------------------- DASHBOARD --------------------
-st.subheader("📊 Monthly Impact Dashboard")
+    # ================= LOG PURCHASE =================
+    if page == "🛒 Log Purchase":
+        st.header("🛒 Log a Purchase")
 
-if st.session_state.purchases:
-    df = pd.DataFrame(st.session_state.purchases)
-    total_spend = df["Price"].sum()
-    total_impact = df["CO2 Impact"].sum()
+        col1, col2 = st.columns(2)
+        product = col1.selectbox("📦 Product Type", impact_factor.keys())
+        brand = col2.text_input("🏷️ Brand Name")
 
-    colA, colB = st.columns(2)
-    colA.metric("💰 Total Spend (₹)", round(total_spend, 2))
-    colB.metric("🌫 Total CO₂ Impact", round(total_impact, 2))
+        price = st.number_input("💰 Price (₹)", min_value=0.0, step=50.0)
 
-    st.bar_chart(df.groupby("Product")["CO2 Impact"].sum())
+        st.caption(f"🌍 Estimated CO₂ Impact: **{price * impact_factor[product]:.1f} units**")
 
-    # -------------------- BADGES --------------------
-    st.subheader("🏅 Your Eco Badge")
+        if st.button("➕ Add Purchase") and price > 0:
+            purchases.append({
+                "Date": datetime.now().strftime("%Y-%m-%d"),
+                "Product": product,
+                "Brand": brand.title(),
+                "Price": price,
+                "CO2": price * impact_factor[product]
+            })
+            st.success("Purchase added successfully 🌿")
 
-    if total_impact < 200:
-        st.success("🌟 Eco Saver Badge Earned!")
-    elif total_impact < 500:
-        st.warning("👍 Low Impact Shopper")
-    else:
-        st.error("⚠ High Impact Alert – Try Greener Choices!")
+        st.divider()
 
-    # -------------------- GREEN SUGGESTIONS --------------------
-    st.subheader("🌿 Greener Alternatives")
-    st.write(", ".join(green_alternatives[product_type]))
+        if st.button("🌱 Add Eco-Friendly Demo Purchase"):
+            purchases.append({
+                "Date": "Demo",
+                "Product": "Second-hand",
+                "Brand": "Thrift Store",
+                "Price": 500,
+                "CO2": 200
+            })
+            st.info("Eco-friendly demo purchase added")
 
+    # ================= DASHBOARD =================
+    if page == "📊 Dashboard":
+        st.header("📊 Monthly Impact Dashboard")
+
+        if not purchases:
+            st.warning("No purchases logged yet.")
+            return
+
+        df = pd.DataFrame(purchases)
+
+        total_spend = df["Price"].sum()
+        total_impact = df["CO2"].sum()
+        eco_score = max(0, 100 - int(total_impact / 150))
+
+        c1, c2, c3 = st.columns(3)
+        c1.metric("💰 Total Spend (₹)", f"{total_spend:.0f}")
+        c2.metric("🌍 CO₂ Impact", f"{total_impact:.0f}")
+        c3.metric("🌱 Eco Score", f"{eco_score}/100")
+
+        st.subheader("CO₂ Impact by Category")
+        st.bar_chart(df.groupby("Product")["CO2"].sum())
+
+        st.subheader("Eco Score Progress")
+        st.progress(eco_score / 100)
+
+        if eco_score >= 75:
+            st.success("🌿 Excellent! You're an eco-conscious shopper!")
+        elif eco_score >= 40:
+            st.warning("🌼 Good effort—there's room to improve!")
+        else:
+            st.error("🚨 High impact detected—try greener choices!")
+
+        with st.expander("📄 View Purchase History"):
+            st.dataframe(df, use_container_width=True)
+
+    # ================= GREENER TIPS =================
+    if page == "♻️ Greener Tips":
+        st.header("♻️ Greener Shopping Tips")
+
+        tips = [
+            "Buy second-hand clothing 👕",
+            "Choose refurbished electronics 🔌",
+            "Avoid fast fashion 🚫",
+            "Carry reusable bags 🛍️",
+            "Support local brands 🏪"
+        ]
+
+        st.success(random.choice(tips))
+        st.caption("Small choices today create a big impact 🌍")
+
+# ================= APP FLOW =================
+if not st.session_state.logged_in:
+    login_page()
 else:
-    st.info("No purchases logged yet.")
+    main_app()
 
-if st.button("Draw Eco Leaf"):
-    draw_leaf()
+st.markdown("---")
+st.caption("🌱 ShopImpact • Conscious Shopping Dashboard")
 
 
