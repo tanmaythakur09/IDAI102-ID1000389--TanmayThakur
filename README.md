@@ -78,13 +78,13 @@ The application follows a complete development and deployment workflow:
 
 ## Live Application Link
 
-🔗 **Streamlit App:** *(Paste your live Streamlit URL here)*
+🔗 **Streamlit App:** *( https://shopimpact1.streamlit.app/ )*
 
 ---
 
 ## GitHub Repository
 
-🔗 **GitHub Repo:** *(Paste your GitHub repository link here)*
+🔗 **GitHub Repo:** *( https://github.com/tanmaythakur09/IDAI102-ID1000389--TanmayThakur )*
 
 ---
 
